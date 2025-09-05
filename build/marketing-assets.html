@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nederlandse Vacature Optimizer - Marketing Assets</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .asset-grid {
+            display: grid;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        /* LinkedIn Banner */
+        .linkedin-banner {
+            width: 1584px;
+            height: 396px;
+            background: linear-gradient(45deg, #1E3A8A 0%, #FF6B35 100%);
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            transform: scale(0.6);
+            transform-origin: top left;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .linkedin-banner::before {
+            content: '🇳🇱';
+            position: absolute;
+            top: 30px;
+            left: 40px;
+            font-size: 40px;
+        }
+
+        .linkedin-banner h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 54px;
+            color: white;
+            position: absolute;
+            left: 60px;
+            top: 100px;
+            line-height: 1.2;
+        }
+
+        .linkedin-banner .tagline {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 20px;
+            color: #FFB380;
+            position: absolute;
+            left: 60px;
+            top: 180px;
+        }
+
+        .linkedin-banner .trust {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 16px;
+            color: white;
+            position: absolute;
+            left: 60px;
+            top: 210px;
+        }
+
+        .linkedin-banner .url {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 16px;
+            color: white;
+            position: absolute;
+            right: 60px;
+            bottom: 40px;
+        }
+
+        .linkedin-banner .chart-icon {
+            position: absolute;
+            right: 180px;
+            top: 40px;
+            width: 60px;
+            height: 40px;
+            border: 2px solid white;
+            border-radius: 4px;
+            background: transparent;
+        }
+
+        .linkedin-banner .chart-icon::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 10px;
+            width: 40px;
+            height: 2px;
+            background: white;
+            transform: rotate(-15deg);
+        }
+
+        /* Social Media Post */
+        .social-post {
+            width: 1080px;
+            height: 1080px;
+            background: white;
+            position: relative;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 60px;
+            transform: scale(0.4);
+            transform-origin: top left;
+        }
+
+        .social-post .big-number {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 120px;
+            color: #FF6B35;
+            line-height: 1;
+            margin-bottom: 20px;
+        }
+
+        .social-post .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 36px;
+            color: #1E3A8A;
+            margin-bottom: 40px;
+        }
+
+        .social-post .features {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 28px;
+            color: #374151;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .social-post .features .check {
+            color: #10B981;
+            font-weight: 600;
+        }
+
+        .social-post .cta {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 24px;
+            color: #1E3A8A;
+            margin-top: 20px;
+        }
+
+        /* Email Header */
+        .email-header {
+            width: 600px;
+            height: 200px;
+            background: linear-gradient(90deg, #1E3A8A 0%, #FF6B35 100%);
+            position: relative;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transform: scale(0.8);
+            transform-origin: top left;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .email-header h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 32px;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .email-header p {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 16px;
+            color: #FFB380;
+        }
+
+        .email-header::before {
+            content: '🇳🇱';
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 24px;
+        }
+
+        .download-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-top: 30px;
+        }
+
+        .download-btn {
+            background: #1E3A8A;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: #FF6B35;
+            transform: translateY(-2px);
+        }
+
+        .asset-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 24px;
+            color: #1E3A8A;
+            margin-bottom: 20px;
+        }
+
+        .asset-description {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 16px;
+            color: #6B7280;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 36px; color: #1E3A8A; text-align: center; margin-bottom: 40px;">
+            🚀 Nederlandse Vacature Optimizer - Marketing Assets
+        </h1>
+
+        <div class="asset-grid">
+            <!-- LinkedIn Banner -->
+            <div>
+                <h2 class="asset-title">LinkedIn Company Banner (1584x396)</h2>
+                <p class="asset-description">Professionele company page banner met Nederlandse positionering en autoriteit indicators</p>
+                <div class="linkedin-banner">
+                    <h1>Nederlandse Vacature<br>Optimizer</h1>
+                    <div class="tagline">89% Betere Response Rates | AI-Powered Recruitment</div>
+                    <div class="trust">🇳🇱 #1 Nederlandse Recruitment AI Tool</div>
+                    <div class="url">nederlandse-vacature-optimizer.nl</div>
+                    <div class="chart-icon"></div>
+                </div>
+                <div class="download-section">
+                    <button class="download-btn" onclick="downloadLinkedInBanner()">📥 Download LinkedIn Banner (PNG)</button>
+                    <button class="download-btn" onclick="downloadLinkedInSVG()">📄 Download SVG Versie</button>
+                </div>
+            </div>
+
+            <!-- Social Media Post -->
+            <div>
+                <h2 class="asset-title">Social Media Post (1080x1080)</h2>
+                <p class="asset-description">Conversie-geoptimaliseerde social media post met cijfer focus en call-to-action</p>
+                <div class="social-post">
+                    <div class="big-number">89%</div>
+                    <div style="font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 48px; color: #1E3A8A; margin-bottom: 20px;">BETERE RESPONSE RATES</div>
+                    <div class="subtitle">met AI-Powered Vacature Analyse</div>
+                    <div class="features">
+                        <div><span class="check">✅</span> Nederlandse markt focus</div>
+                        <div><span class="check">✅</span> Direct resultaat</div>
+                        <div><span class="check">✅</span> Bewezen methode</div>
+                    </div>
+                    <div class="cta">Test gratis op:<br><strong>nederlandse-vacature-optimizer.nl</strong></div>
+                </div>
+                <div class="download-section">
+                    <button class="download-btn" onclick="downloadSocialPost()">📥 Download Social Post (PNG)</button>
+                    <button class="download-btn" onclick="downloadInstagramStory()">📱 Download Instagram Story</button>
+                </div>
+            </div>
+
+            <!-- Email Header -->
+            <div>
+                <h2 class="asset-title">Email Header (600x200)</h2>
+                <p class="asset-description">Professionele email header voor nieuwsbrieven en communicatie</p>
+                <div class="email-header">
+                    <h2>Nederlandse Vacature Optimizer</h2>
+                    <p>AI-Powered Recruitment Excellence</p>
+                </div>
+                <div class="download-section">
+                    <button class="download-btn" onclick="downloadEmailHeader()">📥 Download Email Header (PNG)</button>
+                    <button class="download-btn" onclick="downloadEmailSignature()">✉️ Download Email Signature</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div style="background: #EFF6FF; padding: 30px; border-radius: 12px; border-left: 4px solid #1E3A8A;">
+            <h3 style="font-family: 'Poppins', sans-serif; font-weight: 600; color: #1E3A8A; margin-bottom: 15px;">
+                📋 Gebruik Instructies
+            </h3>
+            <ul style="font-family: 'Inter', sans-serif; color: #374151; line-height: 1.6;">
+                <li><strong>LinkedIn Banner:</strong> Upload direct naar je company page voor instant professional upgrade</li>
+                <li><strong>Social Posts:</strong> Gebruik voor LinkedIn content, Instagram posts, en Facebook marketing</li>
+                <li><strong>Email Header:</strong> Implementeer in Outlook/Gmail signatures en nieuwsbrief templates</li>
+                <li><strong>Aanpassingen:</strong> Alle assets zijn customizable - wijzig tekst/kleuren naar behoefte</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function downloadLinkedInBanner() {
+            // Convert LinkedIn banner to canvas and download
+            const banner = document.querySelector('.linkedin-banner');
+            html2canvas(banner, {
+                width: 1584,
+                height: 396,
+                scale: 2
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'NVO-LinkedIn-Banner-1584x396.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        }
+
+        function downloadLinkedInSVG() {
+            // Download the SVG version
+            const svgContent = `<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1584" height="396" viewBox="0 0 1584 396" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1E3A8A"/>
+      <stop offset="100%" style="stop-color:#FF6B35"/>
+    </linearGradient>
+  </defs>
+  <rect width="1584" height="396" fill="url(#bg)"/>
+  <text x="40" y="60" font-size="40" fill="white">🇳🇱</text>
+  <text x="60" y="160" font-family="Poppins" font-weight="bold" font-size="54" fill="white">Nederlandse Vacature Optimizer</text>
+  <text x="60" y="200" font-family="Inter" font-size="20" fill="#FFB380">89% Betere Response Rates | AI-Powered Recruitment</text>
+  <text x="60" y="230" font-family="Inter" font-size="16" fill="white">#1 Nederlandse Recruitment AI Tool</text>
+  <text x="1200" y="350" font-family="Inter" font-size="16" fill="white">nederlandse-vacature-optimizer.nl</text>
+</svg>`;
+            
+            const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'NVO-LinkedIn-Banner.svg';
+            link.click();
+        }
+
+        function downloadSocialPost() {
+            const post = document.querySelector('.social-post');
+            html2canvas(post, {
+                width: 1080,
+                height: 1080,
+                scale: 2
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'NVO-Social-Post-1080x1080.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        }
+
+        function downloadEmailHeader() {
+            const header = document.querySelector('.email-header');
+            html2canvas(header, {
+                width: 600,
+                height: 200,
+                scale: 2
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'NVO-Email-Header-600x200.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        }
+
+        function downloadInstagramStory() {
+            alert('Instagram Story variant wordt gegenereerd...');
+            // Create Instagram Story version (1080x1920)
+        }
+
+        function downloadEmailSignature() {
+            alert('Email signature template wordt gegenereerd...');
+            // Create email signature HTML
+        }
+    </script>
+
+    <!-- Add html2canvas library for download functionality -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</body>
+</html>

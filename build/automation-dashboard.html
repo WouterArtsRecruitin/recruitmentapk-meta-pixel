@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RecruitmentAPK - Automation Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .metric {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            margin: 1rem 0;
+        }
+
+        .metric-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .test-controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .scenario-selector {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .scenario-card {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .scenario-card:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+        }
+
+        .scenario-card.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .console-output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border-radius: 10px;
+            padding: 1.5rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 2rem;
+        }
+
+        .console-line {
+            margin-bottom: 0.5rem;
+            white-space: pre-wrap;
+        }
+
+        .console-success {
+            color: #4ec9b0;
+        }
+
+        .console-error {
+            color: #f48771;
+        }
+
+        .console-info {
+            color: #569cd6;
+        }
+
+        .console-warn {
+            color: #dcdcaa;
+        }
+
+        .webhook-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ccc;
+        }
+
+        .status-indicator.success {
+            background: #28a745;
+        }
+
+        .status-indicator.error {
+            background: #dc3545;
+        }
+
+        .status-indicator.pending {
+            background: #ffc107;
+        }
+
+        .payload-viewer {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: monospace;
+            font-size: 0.85rem;
+            max-height: 300px;
+            overflow: auto;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 2rem;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .loading {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1><i class="fas fa-robot"></i> RecruitmentAPK Automation Dashboard</h1>
+            <p>Test en monitor alle backend integraties en automatiseringen</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Test Controls -->
+        <div class="test-controls">
+            <button class="btn" onclick="runAllTests()">
+                <i class="fas fa-play"></i> Run All Tests
+            </button>
+            <button class="btn btn-success" onclick="testLeadScoring()">
+                <i class="fas fa-calculator"></i> Test Lead Scoring
+            </button>
+            <button class="btn btn-warning" onclick="testWebhooks()">
+                <i class="fas fa-plug"></i> Test Webhooks
+            </button>
+            <button class="btn btn-danger" onclick="simulateLiveSubmission()">
+                <i class="fas fa-rocket"></i> Simulate Live
+            </button>
+        </div>
+
+        <!-- Scenario Selector -->
+        <div class="scenario-selector">
+            <h3><i class="fas fa-flask"></i> Test Scenarios</h3>
+            <div class="scenario-grid" id="scenarioGrid">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+
+        <!-- Metrics Dashboard -->
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3><i class="fas fa-chart-line"></i> Lead Score</h3>
+                <div class="metric" id="leadScore">-</div>
+                <div class="metric-label" id="leadGrade">Waiting for test...</div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-tags"></i> Lead Tags</h3>
+                <div id="leadTags" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem;">
+                    <!-- Tags will be populated here -->
+                </div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-envelope"></i> Email Template</h3>
+                <div style="margin-top: 1rem;">
+                    <p id="emailTemplate">-</p>
+                    <p id="emailSubject" style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">-</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-sync"></i> Webhook Status</h3>
+                <div class="webhook-status">
+                    <span class="status-indicator" id="zapierStatus"></span>
+                    <span>Zapier</span>
+                </div>
+                <div class="webhook-status">
+                    <span class="status-indicator" id="pipedriveStatus"></span>
+                    <span>Pipedrive</span>
+                </div>
+                <div class="webhook-status">
+                    <span class="status-indicator" id="emailStatus"></span>
+                    <span>Email Service</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lead Score Breakdown Chart -->
+        <div class="card">
+            <h3><i class="fas fa-chart-pie"></i> Lead Score Breakdown</h3>
+            <div class="chart-container">
+                <canvas id="scoreChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Payload Viewers -->
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3><i class="fas fa-code"></i> Zapier Payload</h3>
+                <div class="payload-viewer" id="zapierPayload">
+                    <pre>{}</pre>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-database"></i> Pipedrive Payload</h3>
+                <div class="payload-viewer" id="pipedrivePayload">
+                    <pre>{}</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Console Output -->
+        <div class="card">
+            <h3><i class="fas fa-terminal"></i> Console Output</h3>
+            <div class="console-output" id="consoleOutput">
+                <div class="console-line console-info">🚀 Automation Dashboard Ready</div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Test Scenarios
+        const testScenarios = [
+            {
+                id: 'hot-lead',
+                name: 'Hot Lead - Senior FullStack',
+                icon: '🔥',
+                data: {
+                    role: 'fullstack',
+                    experience: 'senior',
+                    location: 'hybrid',
+                    service: 'enterprise'
+                }
+            },
+            {
+                id: 'qualified-lead',
+                name: 'Qualified - Medior Backend',
+                icon: '⭐',
+                data: {
+                    role: 'backend',
+                    experience: 'medior',
+                    location: 'remote',
+                    service: 'premium'
+                }
+            },
+            {
+                id: 'standard-lead',
+                name: 'Standard - Junior Frontend',
+                icon: '📋',
+                data: {
+                    role: 'frontend',
+                    experience: 'junior',
+                    location: 'office',
+                    service: 'basic'
+                }
+            },
+            {
+                id: 'nurture-lead',
+                name: 'Nurture - Junior No Service',
+                icon: '🌱',
+                data: {
+                    role: 'frontend',
+                    experience: 'junior',
+                    location: 'office'
+                }
+            }
+        ];
+
+        let selectedScenario = testScenarios[0];
+        let scoreChart = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderScenarios();
+            initChart();
+        });
+
+        function renderScenarios() {
+            const grid = document.getElementById('scenarioGrid');
+            grid.innerHTML = testScenarios.map(scenario => `
+                <div class="scenario-card ${scenario.id === selectedScenario.id ? 'selected' : ''}" 
+                     onclick="selectScenario('${scenario.id}')">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">${scenario.icon}</div>
+                    <strong>${scenario.name}</strong>
+                    <div style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;">
+                        ${scenario.data.role} | ${scenario.data.experience} | ${scenario.data.location}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectScenario(id) {
+            selectedScenario = testScenarios.find(s => s.id === id);
+            renderScenarios();
+            log(`Selected scenario: ${selectedScenario.name}`, 'info');
+        }
+
+        function log(message, type = 'info') {
+            const output = document.getElementById('consoleOutput');
+            const line = document.createElement('div');
+            line.className = `console-line console-${type}`;
+            line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            output.appendChild(line);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        // Mock functions (replace with actual implementation)
+        function calculateLeadScore(data) {
+            let score = 100;
+            const experienceScores = { 'junior': 50, 'medior': 75, 'senior': 100 };
+            const roleScores = { 'frontend': 60, 'backend': 70, 'fullstack': 90, 'devops': 85 };
+            const locationScores = { 'remote': 80, 'hybrid': 90, 'office': 70 };
+            const serviceBonus = { 'basic': 20, 'premium': 50, 'enterprise': 100 };
+            
+            score += experienceScores[data.experience] || 50;
+            score += roleScores[data.role] || 60;
+            score += locationScores[data.location] || 70;
+            score += serviceBonus[data.service] || 0;
+            
+            return Math.min(score, 300);
+        }
+
+        function getLeadGrade(score) {
+            if (score >= 250) return 'A+ (Hot Lead)';
+            if (score >= 200) return 'A (Hoge Kwaliteit)';
+            if (score >= 150) return 'B (Goede Kwaliteit)';
+            if (score >= 100) return 'C (Basis Kwaliteit)';
+            return 'D (Lage Kwaliteit)';
+        }
+
+        function generateLeadTags(data) {
+            const tags = ['RecruitmentAPK', 'Smart-Assessment'];
+            if (data.role) tags.push(`Rol-${data.role}`);
+            if (data.experience) tags.push(`Ervaring-${data.experience}`);
+            if (data.location) tags.push(`Locatie-${data.location}`);
+            if (data.service) tags.push(`Service-${data.service}`);
+            
+            const score = calculateLeadScore(data);
+            if (score >= 250) tags.push('Hot-Lead');
+            if (score >= 200) tags.push('Hoge-Prioriteit');
+            
+            return tags;
+        }
+
+        // Test Functions
+        async function runAllTests() {
+            log('🚀 Starting all tests...', 'info');
+            
+            updateWebhookStatus('zapier', 'pending');
+            updateWebhookStatus('pipedrive', 'pending');
+            updateWebhookStatus('email', 'pending');
+            
+            await testLeadScoring();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await testWebhooks();
+            
+            log('✅ All tests completed!', 'success');
+        }
+
+        async function testLeadScoring() {
+            log(`📊 Testing lead scoring for: ${selectedScenario.name}`, 'info');
+            
+            const data = selectedScenario.data;
+            const score = calculateLeadScore(data);
+            const grade = getLeadGrade(score);
+            const tags = generateLeadTags(data);
+            
+            // Update UI
+            document.getElementById('leadScore').textContent = score;
+            document.getElementById('leadGrade').textContent = grade;
+            
+            // Update tags
+            const tagsContainer = document.getElementById('leadTags');
+            tagsContainer.innerHTML = tags.map(tag => 
+                `<span style="background: #667eea; color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">${tag}</span>`
+            ).join('');
+            
+            // Update chart
+            updateScoreChart(data);
+            
+            log(`Score: ${score}/300 - Grade: ${grade}`, 'success');
+            log(`Tags: ${tags.join(', ')}`, 'info');
+        }
+
+        async function testWebhooks() {
+            log('🔌 Testing webhook connections...', 'info');
+            
+            // Simulate webhook calls
+            const webhooks = [
+                { name: 'zapier', delay: 500, success: true },
+                { name: 'pipedrive', delay: 800, success: true },
+                { name: 'email', delay: 600, success: Math.random() > 0.2 }
+            ];
+            
+            for (const webhook of webhooks) {
+                await new Promise(resolve => setTimeout(resolve, webhook.delay));
+                updateWebhookStatus(webhook.name, webhook.success ? 'success' : 'error');
+                log(`${webhook.name} webhook: ${webhook.success ? 'SUCCESS' : 'FAILED'}`, 
+                    webhook.success ? 'success' : 'error');
+            }
+            
+            // Update payloads
+            updatePayloads();
+        }
+
+        async function simulateLiveSubmission() {
+            log('🚀 Simulating live submission...', 'warn');
+            
+            const data = selectedScenario.data;
+            
+            // Run all tests
+            await testLeadScoring();
+            
+            // Update email template
+            const score = calculateLeadScore(data);
+            let template, subject;
+            
+            if (score >= 250) {
+                template = 'hot-lead';
+                subject = '🚀 Perfecte match gevonden! Uw recruitment kan vandaag nog starten';
+            } else if (score >= 200) {
+                template = 'qualified-lead';
+                subject = '✨ Uw assessment resultaten zijn binnen - Sterke matches beschikbaar';
+            } else {
+                template = 'standard-lead';
+                subject = '📋 Uw recruitment assessment - Volgende stappen';
+            }
+            
+            document.getElementById('emailTemplate').textContent = template;
+            document.getElementById('emailSubject').textContent = subject;
+            
+            // Test webhooks
+            await testWebhooks();
+            
+            log('✅ Live submission simulation completed!', 'success');
+        }
+
+        function updateWebhookStatus(webhook, status) {
+            const element = document.getElementById(`${webhook}Status`);
+            element.className = `status-indicator ${status}`;
+        }
+
+        function updatePayloads() {
+            const data = selectedScenario.data;
+            
+            // Zapier payload
+            const zapierPayload = {
+                timestamp: new Date().toISOString(),
+                source: 'RecruitmentAPK',
+                assessment: data,
+                leadScore: calculateLeadScore(data),
+                leadGrade: getLeadGrade(calculateLeadScore(data)),
+                leadTags: generateLeadTags(data)
+            };
+            
+            // Pipedrive payload
+            const pipedrivePayload = {
+                deal: {
+                    title: `${data.role} Recruitment - ${data.experience}`,
+                    value: data.service === 'enterprise' ? 7500 : 
+                           data.service === 'premium' ? 4500 : 2500,
+                    currency: 'EUR'
+                },
+                customFields: {
+                    lead_score: calculateLeadScore(data),
+                    assessment_data: data
+                }
+            };
+            
+            document.getElementById('zapierPayload').innerHTML = 
+                `<pre>${JSON.stringify(zapierPayload, null, 2)}</pre>`;
+            document.getElementById('pipedrivePayload').innerHTML = 
+                `<pre>${JSON.stringify(pipedrivePayload, null, 2)}</pre>`;
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('scoreChart').getContext('2d');
+            scoreChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Base Score', 'Experience', 'Role', 'Location', 'Service'],
+                    datasets: [{
+                        data: [100, 0, 0, 0, 0],
+                        backgroundColor: [
+                            '#667eea',
+                            '#764ba2',
+                            '#f093fb',
+                            '#4facfe',
+                            '#fa709a'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateScoreChart(data) {
+            const experienceScores = { 'junior': 50, 'medior': 75, 'senior': 100 };
+            const roleScores = { 'frontend': 60, 'backend': 70, 'fullstack': 90, 'devops': 85 };
+            const locationScores = { 'remote': 80, 'hybrid': 90, 'office': 70 };
+            const serviceBonus = { 'basic': 20, 'premium': 50, 'enterprise': 100 };
+            
+            scoreChart.data.datasets[0].data = [
+                100,
+                experienceScores[data.experience] || 50,
+                roleScores[data.role] || 60,
+                locationScores[data.location] || 70,
+                serviceBonus[data.service] || 0
+            ];
+            
+            scoreChart.update();
+        }
+    </script>
+</body>
+</html>
