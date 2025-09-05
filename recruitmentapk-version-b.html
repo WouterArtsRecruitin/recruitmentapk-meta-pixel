@@ -23,6 +23,35 @@
     src="https://www.facebook.com/tr?id=1443564313411457&ev=PageView&noscript=1"
     /></noscript>
     <!-- End Meta Pixel Code -->
+
+    <!-- RECRUITMENTAPK ASSESSMENT TRACKING - VERSION B -->
+    <script>
+    (function() {
+      const CONFIG = {
+        ZAPIER_WEBHOOK: 'https://hooks.zapier.com/hooks/catch/318598640/b2bfvvg/assessment',
+        VERSION: 'B'
+      };
+      
+      function trackAssessment(data) {
+        if (typeof fbq !== 'undefined') {
+          fbq('track', 'Lead', { content_name: 'RecruitmentAPK A/B Test B' });
+        }
+        fetch(CONFIG.ZAPIER_WEBHOOK, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            event_type: 'assessment_completion',
+            version: CONFIG.VERSION,
+            timestamp: new Date().toISOString(),
+            ...data 
+          })
+        }).catch(console.error);
+      }
+      
+      window.RecruitmentAPK = { trackAssessment, version: 'B' };
+      console.log('[RecruitmentAPK] Version B tracking ready');
+    })();
+    </script>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

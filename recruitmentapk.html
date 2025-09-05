@@ -23,6 +23,57 @@
     src="https://www.facebook.com/tr?id=1443564313411457&ev=PageView&noscript=1"
     /></noscript>
     <!-- End Meta Pixel Code -->
+
+    <!-- RECRUITMENTAPK ASSESSMENT TRACKING -->
+    <script>
+    (function() {
+      'use strict';
+      
+      const CONFIG = {
+        ZAPIER_WEBHOOK: 'https://hooks.zapier.com/hooks/catch/318598640/b2bfvvg/assessment',
+        DATASET_ID: '1443564313411457',
+        ASSESSMENT_PAGES: ['/assessment', '/recruitment-test', '/recruitmentapk', '/test', '/intake', '/scan'],
+        DEBUG: true
+      };
+      
+      function debugLog(message, data) {
+        if (CONFIG.DEBUG) console.log('[RecruitmentAPK]', message, data);
+      }
+      
+      function trackAssessmentCompletion(form, manualData) {
+        const eventId = 'apk_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        
+        if (typeof fbq !== 'undefined') {
+          fbq('track', 'Lead', {
+            content_name: 'RecruitmentAPK Assessment Completion',
+            content_category: 'Assessment'
+          }, { eventID: eventId });
+        }
+        
+        const webhookData = {
+          event_type: 'assessment_completion',
+          event_id: eventId,
+          timestamp: new Date().toISOString(),
+          assessment_data: manualData || {},
+          pixel_data: { dataset_id: CONFIG.DATASET_ID, pixel_id: '1443564313411457' },
+          page_data: { url: window.location.href, title: document.title }
+        };
+        
+        fetch(CONFIG.ZAPIER_WEBHOOK, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(webhookData)
+        }).then(() => debugLog('✅ Assessment tracked')).catch(e => debugLog('❌ Error:', e));
+      }
+      
+      window.RecruitmentAPK = {
+        trackAssessment: trackAssessmentCompletion,
+        test: () => trackAssessmentCompletion(null, { score: 85, company: 'Test Company' })
+      };
+      
+      debugLog('🚀 RecruitmentAPK tracking ready');
+    })();
+    </script>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
